@@ -19,7 +19,7 @@ class HBNBCommand(cmd.Cmd):
     Command interpreter for the AirBnB clone project.
     """
     prompt = "(hbnb) "
-    
+
     classes = {
         'BaseModel': BaseModel,
         'User': User,
@@ -58,42 +58,42 @@ class HBNBCommand(cmd.Cmd):
         if not arg:
             print("** class name missing **")
             return
-        
+
         args = arg.split()
         class_name = args[0]
-        
+
         if class_name not in self.classes:
             print("** class doesn't exist **")
             return
-        
+
         # Create instance with parameters
         kwargs = {}
-        
+
         for param in args[1:]:
             if '=' not in param:
                 continue
-            
+
             key, value = param.split('=', 1)
-            
+
             # Parse value based on type
             try:
                 # String value (starts and ends with quotes)
                 if value.startswith('"') and value.endswith('"'):
                     value = value[1:-1]  # Remove quotes
-                    value = value.replace('_', ' ')  # Replace underscores with spaces
-                    value = value.replace('\\"', '"')  # Unescape quotes
+                    value = value.replace('_', ' ')  # Replace _
+                    value = value.replace('\\"', '"')  # Unescape
                 # Float value (contains a dot)
                 elif '.' in value:
                     value = float(value)
                 # Integer value
                 else:
                     value = int(value)
-                
+
                 kwargs[key] = value
             except (ValueError, TypeError):
                 # Skip invalid parameters
                 continue
-        
+
         # Create instance
         new_instance = self.classes[class_name](**kwargs)
         new_instance.save()
@@ -105,24 +105,24 @@ class HBNBCommand(cmd.Cmd):
         Usage: show <Class name> <id>
         """
         args = arg.split()
-        
+
         if not args:
             print("** class name missing **")
             return
-        
+
         class_name = args[0]
-        
+
         if class_name not in self.classes:
             print("** class doesn't exist **")
             return
-        
+
         if len(args) < 2:
             print("** instance id missing **")
             return
-        
+
         obj_id = args[1]
         key = "{}.{}".format(class_name, obj_id)
-        
+
         all_objs = storage.all()
         if key in all_objs:
             print(all_objs[key])
@@ -135,24 +135,24 @@ class HBNBCommand(cmd.Cmd):
         Usage: destroy <Class name> <id>
         """
         args = arg.split()
-        
+
         if not args:
             print("** class name missing **")
             return
-        
+
         class_name = args[0]
-        
+
         if class_name not in self.classes:
             print("** class doesn't exist **")
             return
-        
+
         if len(args) < 2:
             print("** instance id missing **")
             return
-        
+
         obj_id = args[1]
         key = "{}.{}".format(class_name, obj_id)
-        
+
         all_objs = storage.all()
         if key in all_objs:
             obj = all_objs[key]
@@ -168,7 +168,7 @@ class HBNBCommand(cmd.Cmd):
         """
         args = arg.split()
         obj_list = []
-        
+
         if args:
             class_name = args[0]
             if class_name not in self.classes:
@@ -177,10 +177,10 @@ class HBNBCommand(cmd.Cmd):
             all_objs = storage.all(self.classes[class_name])
         else:
             all_objs = storage.all()
-        
+
         for obj in all_objs.values():
             obj_list.append(str(obj))
-        
+
         print(obj_list)
 
     def do_update(self, arg):
@@ -189,45 +189,45 @@ class HBNBCommand(cmd.Cmd):
         Usage: update <Class name> <id> <attribute name> "<attribute value>"
         """
         args = arg.split()
-        
+
         if not args:
             print("** class name missing **")
             return
-        
+
         class_name = args[0]
-        
+
         if class_name not in self.classes:
             print("** class doesn't exist **")
             return
-        
+
         if len(args) < 2:
             print("** instance id missing **")
             return
-        
+
         obj_id = args[1]
         key = "{}.{}".format(class_name, obj_id)
-        
+
         all_objs = storage.all()
         if key not in all_objs:
             print("** no instance found **")
             return
-        
+
         if len(args) < 3:
             print("** attribute name missing **")
             return
-        
+
         if len(args) < 4:
             print("** value missing **")
             return
-        
+
         obj = all_objs[key]
         attr_name = args[2]
         attr_value = args[3]
-        
+
         # Remove quotes if present
         if attr_value.startswith('"') and attr_value.endswith('"'):
             attr_value = attr_value[1:-1]
-        
+
         # Try to cast to appropriate type
         if hasattr(obj, attr_name):
             attr_type = type(getattr(obj, attr_name))
@@ -235,7 +235,7 @@ class HBNBCommand(cmd.Cmd):
                 attr_value = attr_type(attr_value)
             except (ValueError, TypeError):
                 pass
-        
+
         setattr(obj, attr_name, attr_value)
         obj.save()
 
@@ -245,17 +245,17 @@ class HBNBCommand(cmd.Cmd):
         Usage: count <Class name>
         """
         args = arg.split()
-        
+
         if not args:
             print("** class name missing **")
             return
-        
+
         class_name = args[0]
-        
+
         if class_name not in self.classes:
             print("** class doesn't exist **")
             return
-        
+
         all_objs = storage.all(self.classes[class_name])
         print(len(all_objs))
 
