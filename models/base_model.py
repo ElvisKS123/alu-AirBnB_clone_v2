@@ -12,7 +12,7 @@ Base = declarative_base()
 
 class BaseModel:
     """
-    BaseModel class that defines all common attributes/methods for other classes.
+    BaseModel class that defines all common attributes/methods.
     """
     id = Column(String(60), primary_key=True, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
@@ -32,9 +32,10 @@ class BaseModel:
                     continue
                 if key in ['created_at', 'updated_at']:
                     if isinstance(value, str):
-                        value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
+                        value = datetime.strptime(
+                            value, '%Y-%m-%dT%H:%M:%S.%f')
                 setattr(self, key, value)
-            
+
             if 'id' not in kwargs:
                 self.id = str(uuid.uuid4())
             if 'created_at' not in kwargs:
@@ -51,7 +52,7 @@ class BaseModel:
         Return string representation of the BaseModel instance.
 
         Returns:
-            str: String representation in format [<class name>] (<id>) <__dict__>
+            str: String representation [<class>] (<id>) <__dict__>
         """
         return "[{}] ({}) {}".format(
             self.__class__.__name__,
@@ -61,7 +62,7 @@ class BaseModel:
 
     def save(self):
         """
-        Update the updated_at attribute with the current datetime and save to storage.
+        Update updated_at with current datetime and save to storage.
         """
         from models import storage
         self.updated_at = datetime.utcnow()
@@ -70,23 +71,25 @@ class BaseModel:
 
     def to_dict(self):
         """
-        Return a dictionary containing all keys/values of __dict__ of the instance.
+        Return dictionary with all keys/values of __dict__.
 
         Returns:
             dict: Dictionary representation of the instance.
         """
         obj_dict = self.__dict__.copy()
         obj_dict['__class__'] = self.__class__.__name__
-        
-        if 'created_at' in obj_dict and isinstance(obj_dict['created_at'], datetime):
+
+        if 'created_at' in obj_dict and isinstance(
+                obj_dict['created_at'], datetime):
             obj_dict['created_at'] = obj_dict['created_at'].isoformat()
-        if 'updated_at' in obj_dict and isinstance(obj_dict['updated_at'], datetime):
+        if 'updated_at' in obj_dict and isinstance(
+                obj_dict['updated_at'], datetime):
             obj_dict['updated_at'] = obj_dict['updated_at'].isoformat()
-        
+
         # Remove _sa_instance_state if it exists
         if '_sa_instance_state' in obj_dict:
             del obj_dict['_sa_instance_state']
-        
+
         return obj_dict
 
     def delete(self):

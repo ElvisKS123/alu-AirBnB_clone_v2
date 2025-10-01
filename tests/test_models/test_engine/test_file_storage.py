@@ -10,6 +10,8 @@ from models.state import State
 from models.city import City
 
 
+@unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db',
+                 "FileStorage tests only run with file storage")
 class TestFileStorage(unittest.TestCase):
     """
     Test cases for FileStorage class.
@@ -44,11 +46,11 @@ class TestFileStorage(unittest.TestCase):
         state = State()
         state.name = "California"
         self.storage.new(state)
-        
+
         city = City()
         city.name = "San Francisco"
         self.storage.new(city)
-        
+
         states = self.storage.all(State)
         self.assertTrue(all(isinstance(obj, State) for obj in states.values()))
 
@@ -78,7 +80,7 @@ class TestFileStorage(unittest.TestCase):
         obj.name = "Test"
         self.storage.new(obj)
         self.storage.save()
-        
+
         new_storage = FileStorage()
         new_storage.reload()
         key = "BaseModel.{}".format(obj.id)
@@ -92,7 +94,7 @@ class TestFileStorage(unittest.TestCase):
         self.storage.new(obj)
         key = "BaseModel.{}".format(obj.id)
         self.assertIn(key, self.storage.all())
-        
+
         self.storage.delete(obj)
         self.assertNotIn(key, self.storage.all())
 
@@ -103,10 +105,10 @@ class TestFileStorage(unittest.TestCase):
         obj = BaseModel()
         self.storage.new(obj)
         all_before = len(self.storage.all())
-        
+
         self.storage.delete(None)
         all_after = len(self.storage.all())
-        
+
         self.assertEqual(all_before, all_after)
 
 

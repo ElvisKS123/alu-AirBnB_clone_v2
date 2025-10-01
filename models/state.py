@@ -11,15 +11,15 @@ from models.base_model import BaseModel, Base
 class State(BaseModel, Base):
     """
     State class that inherits from BaseModel and Base.
-    
+
     Attributes:
         name (str): The name of the state.
         cities (relationship): Relationship with City objects.
     """
     __tablename__ = 'states'
-    
+
     name = Column(String(128), nullable=False)
-    
+
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
         cities = relationship(
             'City',
@@ -30,10 +30,10 @@ class State(BaseModel, Base):
         @property
         def cities(self):
             """
-            Getter attribute for FileStorage that returns the list of City instances.
-            
+            Getter for FileStorage returning list of City instances.
+
             Returns:
-                list: List of City instances with state_id equals to current State.id
+                list: City instances with state_id equals to State.id
             """
             from models import storage
             from models.city import City

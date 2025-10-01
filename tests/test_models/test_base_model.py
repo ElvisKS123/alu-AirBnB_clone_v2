@@ -4,6 +4,7 @@ Unit tests for BaseModel class.
 """
 import unittest
 import os
+import time
 from datetime import datetime
 from models.base_model import BaseModel
 from models import storage
@@ -62,6 +63,7 @@ class TestBaseModel(unittest.TestCase):
         """
         obj = BaseModel()
         old_updated_at = obj.updated_at
+        time.sleep(0.01)  # Small delay to ensure timestamp changes
         obj.save()
         self.assertNotEqual(old_updated_at, obj.updated_at)
 

@@ -31,7 +31,7 @@ place_amenity = Table(
 class Place(BaseModel, Base):
     """
     Place class that inherits from BaseModel and Base.
-    
+
     Attributes:
         city_id (str): The city id (foreign key to cities.id).
         user_id (str): The user id (foreign key to users.id).
@@ -48,7 +48,7 @@ class Place(BaseModel, Base):
         amenity_ids (list): List of Amenity ids (for FileStorage).
     """
     __tablename__ = 'places'
-    
+
     city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
     user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
     name = Column(String(128), nullable=False)
@@ -59,7 +59,7 @@ class Place(BaseModel, Base):
     price_by_night = Column(Integer, nullable=False, default=0)
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
-    
+
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
         reviews = relationship(
             'Review',
@@ -74,12 +74,12 @@ class Place(BaseModel, Base):
         )
     else:
         amenity_ids = []
-        
+
         @property
         def amenities(self):
             """
-            Getter attribute for FileStorage that returns the list of Amenity instances.
-            
+            Getter for FileStorage returning Amenity instances.
+
             Returns:
                 list: List of Amenity instances based on amenity_ids.
             """
@@ -91,12 +91,12 @@ class Place(BaseModel, Base):
                 if amenity.id in self.amenity_ids:
                     amenity_list.append(amenity)
             return amenity_list
-        
+
         @amenities.setter
         def amenities(self, obj):
             """
-            Setter attribute for FileStorage that handles append method for adding Amenity.id.
-            
+            Setter for FileStorage to add Amenity.id.
+
             Args:
                 obj: The Amenity object to add.
             """
@@ -104,14 +104,14 @@ class Place(BaseModel, Base):
             if isinstance(obj, Amenity):
                 if obj.id not in self.amenity_ids:
                     self.amenity_ids.append(obj.id)
-        
+
         @property
         def reviews(self):
             """
-            Getter attribute for FileStorage that returns the list of Review instances.
-            
+            Getter for FileStorage returning Review instances.
+
             Returns:
-                list: List of Review instances with place_id equals to current Place.id
+                list: Review instances with place_id equals to Place.id
             """
             from models import storage
             from models.review import Review
